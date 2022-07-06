@@ -169,74 +169,118 @@ const App = () => {
   }, []);
 
   return (
-    <div className="mainContainer">
-      <div className="dataContainer">
-        <div className="header">
-          <span role="img" aria-label="hand-wave">
-            👋
-          </span>{" "}
-          WELCOME!
+    <!DOCTYPE html>
+    <html lang="ja">
+      <head>
+          <meta charset="utf-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <title>ジュリアード楽器</title>
+          <meta name="description" content="">
+          <meta name="keywords" content="">
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+          <meta name="format-detection" content="telephone=no">
+          <!--CSS-->
+          <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+          <link href="https://fonts.googleapis.com/earlyaccess/notosansjapanese.css" rel="stylesheet">
+          <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+          <!-- 構造化パンくず START-->
+          <script type="application/ld+json">
+              {
+                  "@context": "https://schema.org",
+                  "@type": "BreadcrumbList",
+                  "itemListElement": [
+                      {
+                          "@type": "ListItem",
+                          "position": 1,
+                          "name": "about flower オンラインショップ",
+                          "item": "https://example.com/"
+                      },
+                      {
+                          "@type": "ListItem",
+                          "position": 2,
+                          "name": "Category",
+                          "item": "https://example.com/category/"
+                      },
+                      {
+                          "@type": "ListItem",
+                          "position": 3,
+                          "name": "Current Page",
+                          "item": "https://example.com/category/page/"
+                      }
+                  ]
+              }
+          </script>
+          <!-- 構造化パンくず END-->
+      </head>
+      <div className="mainContainer">
+        <div className="dataContainer">
+          <div className="header">
+            <span role="img" aria-label="hand-wave">
+              👋
+            </span>{" "}
+            WELCOME!
+          </div>
+          <div className="bio">
+            イーサリアムウォレットを接続して、メッセージを作成したら、
+            <span role="img" aria-label="hand-wave">
+              👋
+            </span>
+            を送ってください
+            <span role="img" aria-label="shine">
+              ✨
+            </span>
+          </div>
+          <br />
+          {/* ウォレットコネクトのボタンを実装 */}
+          {!currentAccount && (
+            <button className="waveButton" onClick={connectWallet}>
+              Connect Wallet
+            </button>
+          )}
+          {currentAccount && (
+            <button className="waveButton">Wallet Connected</button>
+          )}
+          {/* waveボタンにwave関数を連動 */}
+          {currentAccount && (
+            <button className="waveButton" onClick={wave}>
+              Wave at Me
+            </button>
+          )}
+          {/* メッセージボックスを実装*/}
+          {currentAccount && (
+            <textarea
+              name="messageArea"
+              placeholder="メッセージはこちら"
+              type="text"
+              id="message"
+              value={messageValue}
+              onChange={(e) => setMessageValue(e.target.value)}
+            />
+          )}
+          {/* 履歴を表示する */}
+          {currentAccount &&
+            allWaves
+              .slice(0)
+              .reverse()
+              .map((wave, index) => {
+                return (
+                  <div
+                    key={index}
+                    style={{
+                      backgroundColor: "#F8F8FF",
+                      marginTop: "16px",
+                      padding: "8px",
+                    }}
+                  >
+                    <div>Address: {wave.address}</div>
+                    <div>Time: {wave.timestamp.toString()}</div>
+                    <div>Message: {wave.message}</div>
+                  </div>
+                );
+              })}
         </div>
-        <div className="bio">
-          イーサリアムウォレットを接続して、メッセージを作成したら、
-          <span role="img" aria-label="hand-wave">
-            👋
-          </span>
-          を送ってください
-          <span role="img" aria-label="shine">
-            ✨
-          </span>
-        </div>
-        <br />
-        {/* ウォレットコネクトのボタンを実装 */}
-        {!currentAccount && (
-          <button className="waveButton" onClick={connectWallet}>
-            Connect Wallet
-          </button>
-        )}
-        {currentAccount && (
-          <button className="waveButton">Wallet Connected</button>
-        )}
-        {/* waveボタンにwave関数を連動 */}
-        {currentAccount && (
-          <button className="waveButton" onClick={wave}>
-            Wave at Me
-          </button>
-        )}
-        {/* メッセージボックスを実装*/}
-        {currentAccount && (
-          <textarea
-            name="messageArea"
-            placeholder="メッセージはこちら"
-            type="text"
-            id="message"
-            value={messageValue}
-            onChange={(e) => setMessageValue(e.target.value)}
-          />
-        )}
-        {/* 履歴を表示する */}
-        {currentAccount &&
-          allWaves
-            .slice(0)
-            .reverse()
-            .map((wave, index) => {
-              return (
-                <div
-                  key={index}
-                  style={{
-                    backgroundColor: "#F8F8FF",
-                    marginTop: "16px",
-                    padding: "8px",
-                  }}
-                >
-                  <div>Address: {wave.address}</div>
-                  <div>Time: {wave.timestamp.toString()}</div>
-                  <div>Message: {wave.message}</div>
-                </div>
-              );
-            })}
       </div>
-    </div>
+    </html>
   );
 };
 export default App;
