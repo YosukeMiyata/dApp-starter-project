@@ -15,9 +15,11 @@ const App = () => {
   const [allWaves, setAllWaves] = useState([]);
   /* totalwavesを保存する状態変数を定義 */
   const [totalWaves, setTotalWaves] = useState("");
+  /* statementを保存する状態変数を定義 */
+  //const [statement, setStatement] = useState("");
   console.log("currentAccount: ", currentAccount);
   /* デプロイされたコントラクトのアドレスを保持する変数を作成 */
-  const contractAddress = "0x427EACCBC4A6705626AFcE44c211817272646bB3";
+  const contractAddress = "0x103C9884B8151336D473114d41bd7F85565bD437";
   /* コントラクトからすべてのwavesを取得するメソッドを作成 */
   /* ABIの内容を参照する変数を作成 */
   const contractABI = abi.abi;
@@ -85,6 +87,35 @@ const App = () => {
     }
   };
 
+  /*const getStatement = async () => {
+    const { ethereum } = window;
+
+    try {
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+        
+        const statement = await wavePortalContract.getStatement();
+        
+        
+        const statementCleaned = statement;
+        
+        
+        console.log("statementCleaned is ...", statementCleaned);
+        setTotalWaves(statementCleaned);
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };*/
+
   /**
    * `emit`されたイベントをフロントエンドに反映させる
    */
@@ -103,6 +134,18 @@ const App = () => {
       ]);
     };
 
+    const onNewTotalWave = (totalWaves) => {
+      console.log("NewTotalWave", totalWaves);
+      const totalWavesCleaned = totalWaves.toNumber();
+      setTotalWaves(totalWavesCleaned);
+    };
+
+    /*const onNewStatement = (statement) => {
+      console.log("NewStatement", statement);
+      const statementCleaned = statement;
+      setStatement(statementCleaned);
+    };*/
+
     /* NewWaveイベントがコントラクトから発信されたときに、情報をを受け取ります */
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -114,11 +157,15 @@ const App = () => {
         signer
       );
       wavePortalContract.on("NewWave", onNewWave);
+      wavePortalContract.on("NewTotalWave", onNewTotalWave);
+      //wavePortalContract.on("NewStatement", onNewStatement);
     }
     /*メモリリークを防ぐために、NewWaveのイベントを解除します*/
     return () => {
       if (wavePortalContract) {
         wavePortalContract.off("NewWave", onNewWave);
+        wavePortalContract.off("NewTotalWave", onNewTotalWave);
+        //wavePortalContract.off("NewStatement", onNewStatement);
       }
     };
   }, []);
@@ -141,6 +188,7 @@ const App = () => {
         setCurrentAccount(account);
         getAllWaves();
         getTotalWaves();
+        //getStatement();
       } else {
         console.log("No authorized account found");
       }
@@ -178,8 +226,13 @@ const App = () => {
           contractABI,
           signer
         );
+        console.log("He/She has waved!");
         let count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
+        
+        let contractBalance = await provider.getBalance(wavePortalContract.address);
+        console.log("Contract balance:", ethers.utils.formatEther(contractBalance));
+        
         /* コントラクトに👋（wave）を書き込む */
         const waveTxn = await wavePortalContract.wave(messageValue, {
           gasLimit: 300000,
@@ -189,6 +242,23 @@ const App = () => {
         console.log("Mined -- ", waveTxn.hash);
         count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
+        
+        let contractBalance_post = await provider.getBalance(
+          wavePortalContract.address
+        );
+        /* コントラクトの残高が減っていることを確認 */
+        if (contractBalance_post < contractBalance) {
+          /* 減っていたら下記を出力 */
+          console.log("User won ETH!");
+          alert('User won ETH!');
+        } else {
+          console.log("User didn't win ETH.");
+          alert('User didn\'t win ETH.');
+        }
+        console.log(
+          "Contract balance after wave:",
+          ethers.utils.formatEther(contractBalance_post)
+        );
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -238,6 +308,14 @@ const App = () => {
           </button>
         )}
         <div>トータルウェイブ数: {totalWaves}</div>
+        {/* <div>ジャッジ: {statement}</div>*/}
+        {/* 色々表示する 
+        {currentAccount && (
+          <div>トータルウェイブ数: {totalWaves}</div>
+        )}
+        {currentAccount && (
+          <div>ジャッジ: {statement}</div>
+        )}*/}
         {/* メッセージボックスを実装*/}
         {currentAccount && (
           <textarea
