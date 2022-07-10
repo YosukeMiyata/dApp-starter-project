@@ -72,9 +72,10 @@ const App = () => {
         const totalWaves = await wavePortalContract.getTotalWaves();
         
         /* UIに必要なのは、トータルウェイブ数 */
-        const totalWavesCleaned = totalWaves;
+        const totalWavesCleaned = totalWaves.toNumber();
         
         /* React Stateにデータを格納する */
+        console.log("totalWavesCleaned is ...", totalWavesCleaned);
         setTotalWaves(totalWavesCleaned);
       } else {
         console.log("Ethereum object doesn't exist!");
