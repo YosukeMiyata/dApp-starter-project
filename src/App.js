@@ -143,6 +143,7 @@ const App = () => {
     };
 
     const onNewStatement = (statement) => {
+      showResults = true;
       console.log("NewStatement", statement);
       const statementCleaned = statement;
       setStatement(statementCleaned);
@@ -165,7 +166,6 @@ const App = () => {
     /*メモリリークを防ぐために、NewWaveのイベントを解除します*/
     return () => {
       if (wavePortalContract) {
-        showResults = true;
         wavePortalContract.off("NewWave", onNewWave);
         wavePortalContract.off("NewTotalWave", onNewTotalWave);
         wavePortalContract.off("NewStatement", onNewStatement);
