@@ -6,6 +6,8 @@ import { ethers } from "ethers";
 /* ABIファイルを含むWavePortal.jsonファイルをインポートする*/
 import abi from "./utils/WavePortal.json";
 
+let showResults = false;
+
 const App = () => {
   /* ユーザーのパブリックウォレットを保存するために使用する状態変数を定義 */
   const [currentAccount, setCurrentAccount] = useState("");
@@ -16,10 +18,10 @@ const App = () => {
   /* totalwavesを保存する状態変数を定義 */
   const [totalWaves, setTotalWaves] = useState("");
   /* statementを保存する状態変数を定義 */
-  //const [statement, setStatement] = useState("");
+  const [statement, setStatement] = useState("");
   console.log("currentAccount: ", currentAccount);
   /* デプロイされたコントラクトのアドレスを保持する変数を作成 */
-  const contractAddress = "0x103C9884B8151336D473114d41bd7F85565bD437";
+  const contractAddress = "0x95d58705706b446522abC14B5006B8f1566aeE2d";
   /* コントラクトからすべてのwavesを取得するメソッドを作成 */
   /* ABIの内容を参照する変数を作成 */
   const contractABI = abi.abi;
@@ -87,7 +89,7 @@ const App = () => {
     }
   };
 
-  /*const getStatement = async () => {
+  const getStatement = async () => {
     const { ethereum } = window;
 
     try {
@@ -100,21 +102,21 @@ const App = () => {
           signer
         );
         
-        const statement = await wavePortalContract.getStatement();
+        const statementCleaned = await wavePortalContract.getStatement();
         
         
-        const statementCleaned = statement;
+        //const statementCleaned = statement;
         
         
         console.log("statementCleaned is ...", statementCleaned);
-        setTotalWaves(statementCleaned);
+        setStatement(statementCleaned);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
     } catch (error) {
       console.log(error);
     }
-  };*/
+  };
 
   /**
    * `emit`されたイベントをフロントエンドに反映させる
@@ -140,11 +142,11 @@ const App = () => {
       setTotalWaves(totalWavesCleaned);
     };
 
-    /*const onNewStatement = (statement) => {
+    const onNewStatement = (statement) => {
       console.log("NewStatement", statement);
       const statementCleaned = statement;
       setStatement(statementCleaned);
-    };*/
+    };
 
     /* NewWaveイベントがコントラクトから発信されたときに、情報をを受け取ります */
     if (window.ethereum) {
@@ -156,16 +158,17 @@ const App = () => {
         contractABI,
         signer
       );
+      showResults = true;
       wavePortalContract.on("NewWave", onNewWave);
       wavePortalContract.on("NewTotalWave", onNewTotalWave);
-      //wavePortalContract.on("NewStatement", onNewStatement);
+      wavePortalContract.on("NewStatement", onNewStatement);
     }
     /*メモリリークを防ぐために、NewWaveのイベントを解除します*/
     return () => {
       if (wavePortalContract) {
         wavePortalContract.off("NewWave", onNewWave);
         wavePortalContract.off("NewTotalWave", onNewTotalWave);
-        //wavePortalContract.off("NewStatement", onNewStatement);
+        wavePortalContract.off("NewStatement", onNewStatement);
       }
     };
   }, []);
@@ -188,7 +191,7 @@ const App = () => {
         setCurrentAccount(account);
         getAllWaves();
         getTotalWaves();
-        //getStatement();
+        getStatement();
       } else {
         console.log("No authorized account found");
       }
@@ -307,15 +310,14 @@ const App = () => {
             Wave at Me
           </button>
         )}
-        <div>トータルウェイブ数: {totalWaves}</div>
-        {/* <div>ジャッジ: {statement}</div>*/}
-        {/* 色々表示する 
-        {currentAccount && (
+        {/*{currentAccount && (
           <div>トータルウェイブ数: {totalWaves}</div>
         )}
         {currentAccount && (
           <div>ジャッジ: {statement}</div>
         )}*/}
+        { showResults ? <div>トータルウェイブ数: {totalWaves}</div> : null }
+        { showResults ? <div>ジャッジ: {statement}</div> : null }
         {/* メッセージボックスを実装*/}
         {currentAccount && (
           <textarea
