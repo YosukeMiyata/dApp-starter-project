@@ -261,6 +261,7 @@ const App = () => {
           "Contract balance after wave:",
           ethers.utils.formatEther(contractBalance_post)
         );
+        showResults = true;
       } else {
         console.log("Ethereum object doesn't exist!");
       }
