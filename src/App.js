@@ -158,7 +158,6 @@ const App = () => {
         contractABI,
         signer
       );
-      showResults = true;
       wavePortalContract.on("NewWave", onNewWave);
       wavePortalContract.on("NewTotalWave", onNewTotalWave);
       wavePortalContract.on("NewStatement", onNewStatement);
