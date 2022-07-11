@@ -21,7 +21,7 @@ const App = () => {
   const [statement, setStatement] = useState("");
   console.log("currentAccount: ", currentAccount);
   /* デプロイされたコントラクトのアドレスを保持する変数を作成 */
-  const contractAddress = "0x95d58705706b446522abC14B5006B8f1566aeE2d";
+  const contractAddress = "0x58827ef8b4c63AC860248a47e584C03D6bb4D745";
   /* コントラクトからすべてのwavesを取得するメソッドを作成 */
   /* ABIの内容を参照する変数を作成 */
   const contractABI = abi.abi;
