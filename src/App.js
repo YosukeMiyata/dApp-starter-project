@@ -165,6 +165,7 @@ const App = () => {
     /*メモリリークを防ぐために、NewWaveのイベントを解除します*/
     return () => {
       if (wavePortalContract) {
+        showResults = true;
         wavePortalContract.off("NewWave", onNewWave);
         wavePortalContract.off("NewTotalWave", onNewTotalWave);
         wavePortalContract.off("NewStatement", onNewStatement);
@@ -261,7 +262,7 @@ const App = () => {
           "Contract balance after wave:",
           ethers.utils.formatEther(contractBalance_post)
         );
-        showResults = true;
+        
       } else {
         console.log("Ethereum object doesn't exist!");
       }
